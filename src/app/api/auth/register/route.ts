@@ -38,6 +38,11 @@ export async function POST(request: NextRequest) {
     // Create portfolio with $100k
     db.prepare(`INSERT INTO portfolios (user_id) VALUES (?)`).run(userId);
 
+    // Seed default watchlist
+    const DEFAULT_TICKERS = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NVDA", "META", "BTC-USD", "ETH-USD"];
+    const watchlistStmt = db.prepare(`INSERT OR IGNORE INTO watchlist (ticker, user_id) VALUES (?, ?)`);
+    for (const ticker of DEFAULT_TICKERS) watchlistStmt.run(ticker, userId);
+
     const token = createSession(userId);
     const res = NextResponse.json({ user: { id: userId, username, email } });
     res.cookies.set("session", token, SESSION_COOKIE_OPTIONS);
