@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/components/AuthProvider";
 import { usePortfolio, useTradeHistory } from "@/hooks/useTrading";
@@ -6,8 +7,17 @@ import PortfolioChart from "@/components/PortfolioChart";
 
 export default function PortfolioPage() {
   const { user, loading: authLoading } = useAuth();
-  const { data: portfolio, isLoading } = usePortfolio();
-  const { data: trades } = useTradeHistory();
+  const { data: portfolio, isLoading, mutate } = usePortfolio();
+  const { data: trades, mutate: mutateTrades } = useTradeHistory();
+  const [resetting, setResetting] = useState(false);
+
+  const resetPortfolio = async () => {
+    if (!confirm("Reset portfolio to $100,000 cash? This will erase all trades and positions.")) return;
+    setResetting(true);
+    await fetch("/api/trading/reset", { method: "POST" });
+    await Promise.all([mutate(), mutateTrades()]);
+    setResetting(false);
+  };
 
   if (authLoading) {
     return (
@@ -30,8 +40,15 @@ export default function PortfolioPage() {
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
-      <div className="text-xs tracking-[0.3em] uppercase text-white/30 mb-8 animate-fade-in-up">
-        Paper Portfolio
+      <div className="flex items-center justify-between mb-8 animate-fade-in-up">
+        <span className="text-xs tracking-[0.3em] uppercase text-white/30">Paper Portfolio</span>
+        <button
+          onClick={resetPortfolio}
+          disabled={resetting}
+          className="text-xs tracking-[0.2em] uppercase text-red-400/50 hover:text-red-400 border border-red-400/20 hover:border-red-400/50 px-4 py-1.5 transition-all disabled:opacity-30"
+        >
+          {resetting ? "···" : "Reset"}
+        </button>
       </div>
 
       {/* Performance chart */}
