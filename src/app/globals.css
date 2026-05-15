@@ -202,6 +202,10 @@ body[data-intro="true"] .ticker-scroller {
   animation: fadeIn 0.5s ease 2.8s both;
 }
 
+/* ── Hide scrollbar utility ── */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.ticker-scroller::-webkit-scrollbar { display: none; }
+
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

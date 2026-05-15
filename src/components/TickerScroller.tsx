@@ -79,10 +79,10 @@ export default function TickerScroller() {
   const items = [...ordered, ...ordered];
 
   return (
-    <div className="ticker-scroller w-full bg-black border-b border-white/8 overflow-hidden">
+    <div className="ticker-scroller w-full bg-black border-b border-white/8 overflow-x-scroll" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
       <div
         ref={scrollRef}
-        className="flex items-center gap-8 px-6 py-2 overflow-x-hidden whitespace-nowrap"
+        className="flex items-center gap-8 px-6 py-2 overflow-x-hidden whitespace-nowrap min-w-0"
       >
         {items.map((q, i) => {
           const pct = q.changePercent ?? 0;

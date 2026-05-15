@@ -87,7 +87,7 @@ export default function CryptoScroller() {
   };
 
   return (
-    <div className="w-full bg-black border-b border-white/8 overflow-hidden">
+    <div className="w-full bg-black border-b border-white/8 overflow-x-scroll" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
       <div
         ref={scrollRef}
         className="flex items-center gap-8 px-6 py-2 overflow-x-hidden whitespace-nowrap"

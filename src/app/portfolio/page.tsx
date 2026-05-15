@@ -77,38 +77,52 @@ export default function PortfolioPage() {
                 No positions yet
               </div>
             ) : (
-              <div className="border border-white/10">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-white/8">
-                      {["Ticker", "Shares", "Avg Cost", "Price", "Value", "P&L"].map((h, i) => (
-                        <th key={h} className={`px-4 py-2 text-xs tracking-[0.2em] uppercase text-white/25 ${i === 0 ? "text-left" : "text-right"}`}>
-                          {h}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {portfolio.positions.map((p, i) => (
-                      <tr key={p.ticker} className={`border-b border-white/5 last:border-b-0 hover:bg-white/3 transition-colors animate-fade-in-up stagger-${Math.min(i + 1, 8)}`}>
-                        <td className="px-4 py-3">
-                          <Link href={`/stock/${p.ticker}`} className="text-xs tracking-[0.2em] text-white hover:text-white/60 transition-colors">
-                            {p.ticker}
-                          </Link>
-                        </td>
-                        <td className="px-4 py-3 text-right text-xs text-white">{p.quantity}</td>
-                        <td className="px-4 py-3 text-right text-xs text-white/50">${fmt(p.avgCost)}</td>
-                        <td className="px-4 py-3 text-right text-xs text-white">${fmt(p.currentPrice)}</td>
-                        <td className="px-4 py-3 text-right text-xs text-white">${fmt(p.marketValue)}</td>
-                        <td className={`px-4 py-3 text-right text-xs font-medium ${p.pnl >= 0 ? "text-green-400" : "text-red-400"}`}>
-                          {p.pnl >= 0 ? "+" : ""}${fmt(p.pnl)}{" "}
-                          <span className="text-white/30">({p.pnlPercent >= 0 ? "+" : ""}{p.pnlPercent.toFixed(2)}%)</span>
-                        </td>
+              <>
+                {/* Mobile: cards */}
+                <div className="sm:hidden space-y-px border border-white/10">
+                  {portfolio.positions.map((p) => (
+                    <Link key={p.ticker} href={`/stock/${p.ticker}`} className="block px-4 py-3 border-b border-white/5 last:border-b-0 hover:bg-white/3 transition-colors">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-xs tracking-[0.2em] text-white">{p.ticker}</span>
+                        <span className={`text-xs font-medium ${p.pnl >= 0 ? "text-green-400" : "text-red-400"}`}>
+                          {p.pnl >= 0 ? "+" : ""}${fmt(p.pnl)} ({p.pnlPercent >= 0 ? "+" : ""}{p.pnlPercent.toFixed(2)}%)
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 text-xs">
+                        <div><span className="text-white/30">Shares </span><span className="text-white">{p.quantity}</span></div>
+                        <div><span className="text-white/30">Avg </span><span className="text-white">${fmt(p.avgCost)}</span></div>
+                        <div><span className="text-white/30">Price </span><span className="text-white">${fmt(p.currentPrice)}</span></div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+                {/* Desktop: table */}
+                <div className="hidden sm:block border border-white/10 overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-white/8">
+                        {["Ticker", "Shares", "Avg Cost", "Price", "Value", "P&L"].map((h, i) => (
+                          <th key={h} className={`px-4 py-2 text-xs tracking-[0.2em] uppercase text-white/25 ${i === 0 ? "text-left" : "text-right"}`}>{h}</th>
+                        ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {portfolio.positions.map((p, i) => (
+                        <tr key={p.ticker} className={`border-b border-white/5 last:border-b-0 hover:bg-white/3 transition-colors animate-fade-in-up stagger-${Math.min(i + 1, 8)}`}>
+                          <td className="px-4 py-3"><Link href={`/stock/${p.ticker}`} className="text-xs tracking-[0.2em] text-white hover:text-white/60 transition-colors">{p.ticker}</Link></td>
+                          <td className="px-4 py-3 text-right text-xs text-white">{p.quantity}</td>
+                          <td className="px-4 py-3 text-right text-xs text-white/50">${fmt(p.avgCost)}</td>
+                          <td className="px-4 py-3 text-right text-xs text-white">${fmt(p.currentPrice)}</td>
+                          <td className="px-4 py-3 text-right text-xs text-white">${fmt(p.marketValue)}</td>
+                          <td className={`px-4 py-3 text-right text-xs font-medium ${p.pnl >= 0 ? "text-green-400" : "text-red-400"}`}>
+                            {p.pnl >= 0 ? "+" : ""}${fmt(p.pnl)} <span className="text-white/30">({p.pnlPercent >= 0 ? "+" : ""}{p.pnlPercent.toFixed(2)}%)</span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             )}
           </div>
         </>
@@ -125,41 +139,50 @@ export default function PortfolioPage() {
             No trades yet
           </div>
         ) : (
-          <div className="border border-white/10">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-white/8">
-                  {["Date", "Ticker", "Side", "Qty", "Price", "Total"].map((h, i) => (
-                    <th key={h} className={`px-4 py-2 text-xs tracking-[0.2em] uppercase text-white/25 ${i < 3 ? "text-left" : "text-right"}`}>
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {trades.map((t, i) => (
-                  <tr key={t.id} className={`border-b border-white/5 last:border-b-0 hover:bg-white/3 transition-colors animate-fade-in-up stagger-${Math.min(i + 1, 8)}`}>
-                    <td className="px-4 py-3 text-xs text-white/30">
-                      {new Date(t.executedAt).toLocaleDateString()}
-                    </td>
-                    <td className="px-4 py-3">
-                      <Link href={`/stock/${t.ticker}`} className="text-xs tracking-[0.2em] text-white hover:text-white/60 transition-colors">
-                        {t.ticker}
-                      </Link>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`text-xs tracking-widest ${t.side === "buy" ? "text-green-400" : "text-red-400"}`}>
-                        {t.side.toUpperCase()}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right text-xs text-white">{t.quantity}</td>
-                    <td className="px-4 py-3 text-right text-xs text-white/50">${fmt(t.price)}</td>
-                    <td className="px-4 py-3 text-right text-xs text-white">${fmt(t.total)}</td>
+          <>
+            {/* Mobile: cards */}
+            <div className="sm:hidden space-y-px border border-white/10">
+              {trades.map((t) => (
+                <div key={t.id} className="px-4 py-3 border-b border-white/5 last:border-b-0">
+                  <div className="flex justify-between items-center mb-1">
+                    <div className="flex items-center gap-2">
+                      <Link href={`/stock/${t.ticker}`} className="text-xs tracking-[0.2em] text-white">{t.ticker}</Link>
+                      <span className={`text-xs tracking-widest ${t.side === "buy" ? "text-green-400" : "text-red-400"}`}>{t.side.toUpperCase()}</span>
+                    </div>
+                    <span className="text-xs text-white">${fmt(t.total)}</span>
+                  </div>
+                  <div className="flex gap-3 text-xs text-white/30">
+                    <span>{new Date(t.executedAt).toLocaleDateString()}</span>
+                    <span>{t.quantity} × ${fmt(t.price)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Desktop: table */}
+            <div className="hidden sm:block border border-white/10 overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-white/8">
+                    {["Date", "Ticker", "Side", "Qty", "Price", "Total"].map((h, i) => (
+                      <th key={h} className={`px-4 py-2 text-xs tracking-[0.2em] uppercase text-white/25 ${i < 3 ? "text-left" : "text-right"}`}>{h}</th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {trades.map((t, i) => (
+                    <tr key={t.id} className={`border-b border-white/5 last:border-b-0 hover:bg-white/3 transition-colors animate-fade-in-up stagger-${Math.min(i + 1, 8)}`}>
+                      <td className="px-4 py-3 text-xs text-white/30">{new Date(t.executedAt).toLocaleDateString()}</td>
+                      <td className="px-4 py-3"><Link href={`/stock/${t.ticker}`} className="text-xs tracking-[0.2em] text-white hover:text-white/60 transition-colors">{t.ticker}</Link></td>
+                      <td className="px-4 py-3"><span className={`text-xs tracking-widest ${t.side === "buy" ? "text-green-400" : "text-red-400"}`}>{t.side.toUpperCase()}</span></td>
+                      <td className="px-4 py-3 text-right text-xs text-white">{t.quantity}</td>
+                      <td className="px-4 py-3 text-right text-xs text-white/50">${fmt(t.price)}</td>
+                      <td className="px-4 py-3 text-right text-xs text-white">${fmt(t.total)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </div>

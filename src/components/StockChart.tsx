@@ -104,7 +104,8 @@ export default function StockChart({
   const dataIdRef = useRef(0);
   const hasAnimatedRef = useRef(false);
   const lastTickerRef = useRef<string>("");
-  const [chartReady, setChartReady] = useState(0); // increments when chart+series are created
+  const [chartReady, setChartReady] = useState(0);
+  const chartHeight = typeof window !== "undefined" && window.innerWidth < 640 ? 280 : 500;
 
   // Create chart
   useEffect(() => {
@@ -120,7 +121,7 @@ export default function StockChart({
         horzLines: { color: "rgba(255,255,255,0.04)" },
       },
       width: containerRef.current.clientWidth,
-      height: 500,
+      height: chartHeight,
       crosshair: { mode: 0 },
       localization: isIntraday ? {
         timeFormatter: (time: number) => {
@@ -300,7 +301,7 @@ export default function StockChart({
           if (dataIdRef.current !== myId) return;
 
           const w = containerRef.current!.clientWidth;
-          const h = 500;
+          const h = chartHeight;
           canvas.width = w * window.devicePixelRatio;
           canvas.height = h * window.devicePixelRatio;
           canvas.style.width = w + "px";
@@ -642,7 +643,7 @@ export default function StockChart({
     const series = seriesRef.current;
     if (!canvas || !container || !chart || !series || period !== "1d" || !data.length || isCrypto) return;
 
-    const H = 500;
+    const H = chartHeight;
     let mouseX = -1;
     let hoverRaf = 0;
 
@@ -765,7 +766,7 @@ export default function StockChart({
   }, [data, period, phase]);
 
   return (
-    <div className="relative w-full" style={{ height: 500 }}>
+    <div className="relative w-full" style={{ height: chartHeight }}>
       <div
         ref={containerRef}
         className="absolute inset-0 overflow-hidden border border-white/10"

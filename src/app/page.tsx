@@ -78,7 +78,7 @@ export default function HomePage() {
         ))}
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-16 relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-16 relative">
 
         {/* Hero + Live News side by side */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16 items-start">
@@ -86,7 +86,7 @@ export default function HomePage() {
             <div className="text-xs tracking-[0.5em] uppercase text-white/20 mb-4">
               Market Intelligence System
             </div>
-            <h1 className="text-5xl font-extralight tracking-tight text-white leading-none mb-4">
+            <h1 className="text-3xl sm:text-5xl font-extralight tracking-tight text-white leading-none mb-4">
               Mass Info
             </h1>
             <div className="w-12 h-px bg-white/20 mb-6" />
