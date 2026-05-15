@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+:root {
+  --background: #000000;
+  --foreground: #ffffff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-mono);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: #000;
+  color: #fff;
+  font-family: var(--font-geist-mono), "Courier New", monospace;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: #222; }
+::-webkit-scrollbar-thumb:hover { background: #444; }
+
+/* ── Keyframes ── */
+
+@keyframes fadeIn {
+  0%   { opacity: 0; filter: brightness(3); }
+  18%  { opacity: 1; filter: brightness(2.5); }
+  45%  { opacity: 1; filter: brightness(1.4); }
+  100% { opacity: 1; filter: brightness(1); }
+}
+
+@keyframes fadeInUp {
+  0%   { opacity: 0; transform: translateY(14px); filter: brightness(4); }
+  15%  { opacity: 1; transform: translateY(2px);  filter: brightness(3); }
+  40%  { opacity: 1; transform: translateY(0);    filter: brightness(1.5); }
+  100% { opacity: 1; transform: translateY(0);    filter: brightness(1); }
+}
+
+@keyframes scanIn {
+  0%   { opacity: 0; transform: translateX(-8px); filter: brightness(3); }
+  20%  { opacity: 1; transform: translateX(0);    filter: brightness(2); }
+  100% { opacity: 1; transform: translateX(0);    filter: brightness(1); }
+}
+
+@keyframes pageEnter {
+  0%   { opacity: 0; transform: translateY(4px); filter: brightness(3); }
+  20%  { opacity: 1; transform: translateY(0);   filter: brightness(2); }
+  100% { opacity: 1; transform: translateY(0);   filter: brightness(1); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.15; }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes markerPop {
+  from { opacity: 0; transform: scale(0.4) rotate(45deg); }
+  to   { opacity: 0.35; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes cornerExpand {
+  from { width: 8px; height: 8px; }
+  to   { width: 14px; height: 14px; }
+}
+
+/* ── Utility Classes ── */
+
+.animate-fade-in {
+  animation: fadeIn 0.55s ease both;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+.animate-scan-in {
+  animation: scanIn 0.5s cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+.animate-page-enter {
+  animation: pageEnter 0.45s ease-out both;
+}
+
+.animate-count-up {
+  animation: countUp 0.4s cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+.animate-marker-pop {
+  animation: markerPop 0.5s cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+/* Stagger delays */
+.stagger-1 { animation-delay: 0.06s; }
+.stagger-2 { animation-delay: 0.13s; }
+.stagger-3 { animation-delay: 0.20s; }
+.stagger-4 { animation-delay: 0.27s; }
+.stagger-5 { animation-delay: 0.34s; }
+.stagger-6 { animation-delay: 0.41s; }
+.stagger-7 { animation-delay: 0.48s; }
+.stagger-8 { animation-delay: 0.55s; }
+
+/* ── Corner-bracket card ── */
+.card-frame {
+  position: relative;
+}
+.card-frame::before,
+.card-frame::after,
+.card-frame-inner::before,
+.card-frame-inner::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-color: rgba(255,255,255,0.3);
+  border-style: solid;
+  transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+.card-frame::before  { top: 0;    left: 0;  border-width: 1px 0 0 1px; }
+.card-frame::after   { bottom: 0; right: 0; border-width: 0 1px 1px 0; }
+.card-frame-inner::before { top: 0;    right: 0; border-width: 1px 1px 0 0; }
+.card-frame-inner::after  { bottom: 0; left: 0;  border-width: 0 0 1px 1px; }
+
+.card-frame:hover::before,
+.card-frame:hover::after,
+.card-frame:hover .card-frame-inner::before,
+.card-frame:hover .card-frame-inner::after {
+  width: 14px; height: 14px;
+  border-color: rgba(255,255,255,0.8);
+}
+
+/* ── Shimmer loading ── */
+.shimmer {
+  background: linear-gradient(90deg, #0a0a0a 25%, #161616 50%, #0a0a0a 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
+/* ── Live pulse dot ── */
+.pulse-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  background: #fff;
+  border-radius: 50%;
+  animation: pulseDot 1.6s ease-in-out infinite;
+}
+
+/* ── Hover effects ── */
+.hover-lift {
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.hover-lift:hover  { transform: translateY(-2px); }
+.hover-lift:active { transform: translateY(0); }
+
+.hover-lift-sm {
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+.hover-lift-sm:hover  { transform: translateY(-1px); }
+.hover-lift-sm:active { transform: translateY(0); }
+
+/* ── Astrographic scatter markers (decorative) ── */
+.astro-field {
+  position: relative;
+  overflow: hidden;
+}
+.astro-field .marker {
+  position: absolute;
+  color: rgba(255,255,255,0.2);
+  font-size: 10px;
+  font-weight: 100;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  animation: markerPop 0.8s ease both;
+}
+
+/* ── Chart glow (kept for StockChart) ── */
+.chart-glow { }
+
+/* ── First load content delay ── */
+body[data-intro="true"] main {
+  animation: fadeIn 0.6s ease 2.7s both;
+}
+body[data-intro="true"] nav,
+body[data-intro="true"] .ticker-scroller {
+  animation: fadeIn 0.5s ease 2.8s both;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
