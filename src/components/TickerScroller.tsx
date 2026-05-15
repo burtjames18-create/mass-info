@@ -49,7 +49,7 @@ export default function TickerScroller() {
     let raf: number;
     let paused = false;
     const tick = () => {
-      if (!paused && el.scrollWidth > el.clientWidth) {
+      if (!paused) {
         el.scrollLeft += 0.6;
         if (el.scrollLeft >= el.scrollWidth / 2) el.scrollLeft = 0;
       }
