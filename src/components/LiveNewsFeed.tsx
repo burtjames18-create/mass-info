@@ -52,7 +52,7 @@ export default function LiveNewsFeed() {
 
     const tick = () => {
       if (!paused) {
-        pos += 0.4;
+        pos += 0.2;
         if (pos >= el.scrollHeight / 2) pos = 0;
         el.scrollTop = pos;
       }
