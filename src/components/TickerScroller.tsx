@@ -44,28 +44,34 @@ export default function TickerScroller() {
   }, []);
 
   useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
     let raf: number;
     let paused = false;
     const tick = () => {
-      if (!paused) {
+      const el = scrollRef.current;
+      if (el && !paused) {
         el.scrollLeft += 0.6;
-        if (el.scrollLeft >= el.scrollWidth / 2) el.scrollLeft = 0;
+        if (el.scrollWidth > 0 && el.scrollLeft >= el.scrollWidth / 2) {
+          el.scrollLeft = 0;
+        }
       }
       raf = requestAnimationFrame(tick);
     };
     const pause = () => { paused = true; };
     const resume = () => { paused = false; };
-    el.addEventListener("mouseenter", pause);
-    el.addEventListener("mouseleave", resume);
+    const el = scrollRef.current;
+    if (el) {
+      el.addEventListener("mouseenter", pause);
+      el.addEventListener("mouseleave", resume);
+    }
     raf = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(raf);
-      el.removeEventListener("mouseenter", pause);
-      el.removeEventListener("mouseleave", resume);
+      if (el) {
+        el.removeEventListener("mouseenter", pause);
+        el.removeEventListener("mouseleave", resume);
+      }
     };
-  }, [quotes]);
+  }, []); // mount only — reads scrollRef.current on every frame
 
   // Sort loaded quotes: top 5 gainers first, then top 5 losers, then rest
   const loaded = quotes.filter((q) => q.changePercent !== null);
