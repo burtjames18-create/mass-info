@@ -1,12 +1,24 @@
 import Database from "better-sqlite3";
 import path from "path";
+import fs from "fs";
 
-// On Railway, use /data volume (set RAILWAY_VOLUME_MOUNT_PATH=/data in env vars)
-// Locally, use the project's data/ folder
-const DB_PATH = process.env.DB_PATH ||
-  (process.env.RAILWAY_ENVIRONMENT
-    ? "/data/mass-info.db"
-    : path.join(process.cwd(), "data", "mass-info.db"));
+function resolveDbPath(): string {
+  // Explicit override
+  if (process.env.DB_PATH) return process.env.DB_PATH;
+
+  // On Railway: try /data (persistent volume), fall back to /tmp
+  if (process.env.RAILWAY_ENVIRONMENT) {
+    if (fs.existsSync("/data")) return "/data/mass-info.db";
+    return "/tmp/mass-info.db";
+  }
+
+  // Local: use project data/ folder, create it if missing
+  const localDir = path.join(process.cwd(), "data");
+  if (!fs.existsSync(localDir)) fs.mkdirSync(localDir, { recursive: true });
+  return path.join(localDir, "mass-info.db");
+}
+
+const DB_PATH = resolveDbPath();
 
 let db: Database.Database | null = null;
 
