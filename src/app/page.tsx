@@ -2,6 +2,7 @@
 import { useEffect, useState, useCallback } from "react";
 import WatchlistCard from "@/components/WatchlistCard";
 import TopMarketNews from "@/components/TopMarketNews";
+import LiveNewsFeed from "@/components/LiveNewsFeed";
 
 interface WatchlistItem {
   ticker: string;
@@ -79,19 +80,22 @@ export default function HomePage() {
 
       <div className="max-w-7xl mx-auto px-6 py-16 relative">
 
-        {/* Hero */}
-        <div className="mb-20 animate-fade-in-up">
-          <div className="text-xs tracking-[0.5em] uppercase text-white/20 mb-4">
-            Market Intelligence System
+        {/* Hero + Live News side by side */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16 items-start">
+          <div className="animate-fade-in-up">
+            <div className="text-xs tracking-[0.5em] uppercase text-white/20 mb-4">
+              Market Intelligence System
+            </div>
+            <h1 className="text-5xl font-extralight tracking-tight text-white leading-none mb-4">
+              Mass Info
+            </h1>
+            <div className="w-12 h-px bg-white/20 mb-6" />
+            <p className="text-xs text-white/30 max-w-md leading-relaxed tracking-wide">
+              Stock data, news aggregation, and multi-model prediction lines.
+              Search for any ticker to view historical charts with forecasts.
+            </p>
           </div>
-          <h1 className="text-5xl font-extralight tracking-tight text-white leading-none mb-4">
-            Mass Info
-          </h1>
-          <div className="w-12 h-px bg-white/20 mb-6" />
-          <p className="text-xs text-white/30 max-w-md leading-relaxed tracking-wide">
-            Stock data, news aggregation, and multi-model prediction lines.
-            Search for any ticker to view historical charts with forecasts.
-          </p>
+          <LiveNewsFeed />
         </div>
 
         {/* Quick access tickers */}
