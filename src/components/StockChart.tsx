@@ -160,7 +160,7 @@ export default function StockChart({
       rightPriceScale: {
         borderColor: "rgba(255,255,255,0.08)",
         autoScale: true,
-        scaleMargins: { top: 0.1, bottom: 0.1 },
+        scaleMargins: { top: 0.05, bottom: 0.05 },
       },
     });
 
@@ -266,7 +266,6 @@ export default function StockChart({
         title: "",
         lastValueVisible: false,
         priceLineVisible: false,
-        autoscaleInfoProvider: () => null,
       });
       predSeries.setData(pred.points.map((p) => ({ time: normalizeDate(p.date, isIntraday) as any, value: p.price })));
       predSeriesRef.current.set(pred.model, predSeries);
@@ -548,11 +547,11 @@ export default function StockChart({
         const fadeIn = (now: number) => {
           const t = Math.min((now - fadeStart) / fadeDuration, 1);
           const eased = 1 - Math.pow(1 - t, 3);
-          series.applyOptions({ color: `rgba(${rgb.r},${rgb.g},${rgb.b},${eased})`, autoscaleInfoProvider: () => null });
+          series.applyOptions({ color: `rgba(${rgb.r},${rgb.g},${rgb.b},${eased})` });
           if (t < 1) {
             requestAnimationFrame(fadeIn);
           } else {
-            series.applyOptions({ color: pred.color, lastValueVisible: true, priceLineVisible: false, autoscaleInfoProvider: () => null });
+            series.applyOptions({ color: pred.color, lastValueVisible: true, priceLineVisible: false });
           }
         };
         requestAnimationFrame(fadeIn);
