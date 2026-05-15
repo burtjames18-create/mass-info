@@ -18,7 +18,7 @@ export default function TickerScroller() {
   const [quotes, setQuotes] = useState<TickerQuote[]>(
     TOP_TICKERS.map((t) => ({ ticker: t, price: null, changePercent: null }))
   );
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -43,37 +43,7 @@ export default function TickerScroller() {
     return () => { cancelled = true; };
   }, []);
 
-  useEffect(() => {
-    let raf: number;
-    let paused = false;
-    const tick = () => {
-      const el = scrollRef.current;
-      if (el && !paused) {
-        el.scrollLeft += 0.6;
-        if (el.scrollWidth > 0 && el.scrollLeft >= el.scrollWidth / 2) {
-          el.scrollLeft = 0;
-        }
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    const pause = () => { paused = true; };
-    const resume = () => { paused = false; };
-    const el = scrollRef.current;
-    if (el) {
-      el.addEventListener("mouseenter", pause);
-      el.addEventListener("mouseleave", resume);
-    }
-    raf = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(raf);
-      if (el) {
-        el.removeEventListener("mouseenter", pause);
-        el.removeEventListener("mouseleave", resume);
-      }
-    };
-  }, []); // mount only — reads scrollRef.current on every frame
-
-  // Sort loaded quotes: top 5 gainers first, then top 5 losers, then rest
+  // Sort: top 5 gainers first, then middle, then top 5 losers
   const loaded = quotes.filter((q) => q.changePercent !== null);
   const pending = quotes.filter((q) => q.changePercent === null);
   const sorted = [...loaded].sort((a, b) => (b.changePercent ?? 0) - (a.changePercent ?? 0));
@@ -81,16 +51,26 @@ export default function TickerScroller() {
   const losers = sorted.slice(-5).reverse();
   const middle = sorted.slice(5, sorted.length - 5);
   const ordered = [...gainers, ...middle, ...losers, ...pending];
-
   const items = [...ordered, ...ordered];
 
+  // Measure one copy width and set animation duration proportionally
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    const halfW = el.scrollWidth / 2;
+    if (halfW === 0) return;
+    // 80px per second — adjust for feel
+    const duration = halfW / 80;
+    el.style.setProperty("--scroll-width", `${halfW}px`);
+    el.style.setProperty("--scroll-duration", `${duration}s`);
+  }, [quotes]);
+
   return (
-    <div
-      ref={scrollRef}
-      className="ticker-scroller w-full bg-black border-b border-white/8 overflow-x-scroll whitespace-nowrap"
-      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-    >
-      <div className="inline-flex items-center gap-8 px-6 py-2">
+    <div className="ticker-scroller w-full bg-black border-b border-white/8 overflow-hidden">
+      <div
+        ref={trackRef}
+        className="ticker-track flex items-center gap-8 px-6 py-2 whitespace-nowrap w-max"
+      >
         {items.map((q, i) => {
           const pct = q.changePercent ?? 0;
           const isPositive = pct >= 0;
@@ -102,7 +82,11 @@ export default function TickerScroller() {
               href={`/stock/${q.ticker}`}
               className="flex items-center gap-3 shrink-0 group"
             >
-              <span className="text-xs tracking-[0.2em] text-white/60 group-hover:text-white transition-colors">
+              <span className={`text-xs tracking-[0.2em] transition-colors ${
+                isTopGainer ? "text-green-400 group-hover:text-green-300" :
+                isTopLoser  ? "text-red-400 group-hover:text-red-300" :
+                "text-white/60 group-hover:text-white"
+              }`}>
                 {q.ticker}
               </span>
               {q.price !== null ? (

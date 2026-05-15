@@ -3,18 +3,18 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 const CRYPTO_TICKERS = [
-  { symbol: "BTC-USD",  name: "BTC" },
-  { symbol: "ETH-USD",  name: "ETH" },
-  { symbol: "SOL-USD",  name: "SOL" },
-  { symbol: "BNB-USD",  name: "BNB" },
-  { symbol: "XRP-USD",  name: "XRP" },
-  { symbol: "DOGE-USD", name: "DOGE" },
-  { symbol: "ADA-USD",  name: "ADA" },
-  { symbol: "AVAX-USD", name: "AVAX" },
-  { symbol: "LINK-USD", name: "LINK" },
-  { symbol: "DOT-USD",  name: "DOT" },
-  { symbol: "MATIC-USD",name: "MATIC" },
-  { symbol: "LTC-USD",  name: "LTC" },
+  { symbol: "BTC-USD",   name: "BTC" },
+  { symbol: "ETH-USD",   name: "ETH" },
+  { symbol: "SOL-USD",   name: "SOL" },
+  { symbol: "BNB-USD",   name: "BNB" },
+  { symbol: "XRP-USD",   name: "XRP" },
+  { symbol: "DOGE-USD",  name: "DOGE" },
+  { symbol: "ADA-USD",   name: "ADA" },
+  { symbol: "AVAX-USD",  name: "AVAX" },
+  { symbol: "LINK-USD",  name: "LINK" },
+  { symbol: "DOT-USD",   name: "DOT" },
+  { symbol: "MATIC-USD", name: "MATIC" },
+  { symbol: "LTC-USD",   name: "LTC" },
 ];
 
 interface CryptoQuote {
@@ -28,7 +28,7 @@ export default function CryptoScroller() {
   const [quotes, setQuotes] = useState<CryptoQuote[]>(
     CRYPTO_TICKERS.map((t) => ({ ...t, price: null, changePercent: null }))
   );
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -55,27 +55,13 @@ export default function CryptoScroller() {
   }, []);
 
   useEffect(() => {
-    const el = scrollRef.current;
+    const el = trackRef.current;
     if (!el) return;
-    let raf: number;
-    let paused = false;
-    const tick = () => {
-      if (!paused && el.scrollWidth > el.clientWidth) {
-        el.scrollLeft += 1.0;
-        if (el.scrollLeft >= el.scrollWidth / 2) el.scrollLeft = 0;
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    const pause = () => { paused = true; };
-    const resume = () => { paused = false; };
-    el.addEventListener("mouseenter", pause);
-    el.addEventListener("mouseleave", resume);
-    raf = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(raf);
-      el.removeEventListener("mouseenter", pause);
-      el.removeEventListener("mouseleave", resume);
-    };
+    const halfW = el.scrollWidth / 2;
+    if (halfW === 0) return;
+    const duration = halfW / 120; // faster than stocks
+    el.style.setProperty("--scroll-width", `${halfW}px`);
+    el.style.setProperty("--scroll-duration", `${duration}s`);
   }, [quotes]);
 
   const items = [...quotes, ...quotes];
@@ -87,12 +73,11 @@ export default function CryptoScroller() {
   };
 
   return (
-    <div
-      ref={scrollRef}
-      className="w-full bg-black border-b border-white/8 overflow-x-scroll whitespace-nowrap"
-      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-    >
-      <div className="inline-flex items-center gap-8 px-6 py-2">
+    <div className="w-full bg-black border-b border-white/8 overflow-hidden">
+      <div
+        ref={trackRef}
+        className="ticker-track flex items-center gap-8 px-6 py-2 whitespace-nowrap w-max"
+      >
         {items.map((q, i) => {
           const pct = q.changePercent ?? 0;
           const isPositive = pct >= 0;

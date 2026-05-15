@@ -202,6 +202,21 @@ body[data-intro="true"] .ticker-scroller {
   animation: fadeIn 0.5s ease 2.8s both;
 }
 
+/* ── Ticker scroll animation — CSS transform, works on all mobile browsers ── */
+@keyframes tickerScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(calc(-1 * var(--scroll-width, 50%))); }
+}
+
+.ticker-track {
+  animation: tickerScroll var(--scroll-duration, 30s) linear infinite;
+  will-change: transform;
+}
+
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+
 /* ── Hide scrollbar utility ── */
 .scrollbar-none::-webkit-scrollbar { display: none; }
 .ticker-scroller::-webkit-scrollbar { display: none; }
