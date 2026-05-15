@@ -35,6 +35,14 @@ export default function Navbar() {
                 >
                   Portfolio
                 </Link>
+                {user.isAdmin && (
+                  <Link
+                    href="/admin"
+                    className="text-xs tracking-[0.25em] uppercase text-white/35 hover:text-white transition-colors"
+                  >
+                    Admin
+                  </Link>
+                )}
                 <div className="relative">
                   <button
                     onClick={() => setShowMenu(!showMenu)}

@@ -44,7 +44,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Login failed");
-    setUser({ userId: data.user.id, username: data.user.username });
+    setUser({ userId: data.user.id, username: data.user.username, isAdmin: data.user.isAdmin });
   }, []);
 
   const register = useCallback(
@@ -56,7 +56,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Registration failed");
-      setUser({ userId: data.user.id, username: data.user.username });
+      setUser({ userId: data.user.id, username: data.user.username, isAdmin: false });
     },
     []
   );

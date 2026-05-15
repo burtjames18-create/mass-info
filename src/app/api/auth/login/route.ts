@@ -12,9 +12,9 @@ export async function POST(request: NextRequest) {
 
     const db = getDb();
     const user = db
-      .prepare(`SELECT id, username, password_hash FROM users WHERE email = ?`)
+      .prepare(`SELECT id, username, password_hash, is_admin FROM users WHERE email = ?`)
       .get(email.toLowerCase()) as
-      | { id: number; username: string; password_hash: string }
+      | { id: number; username: string; password_hash: string; is_admin: number }
       | undefined;
 
     if (!user) {
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     const token = createSession(user.id);
     const res = NextResponse.json({
-      user: { id: user.id, username: user.username, email },
+      user: { id: user.id, username: user.username, email, isAdmin: user.is_admin === 1 },
     });
     res.cookies.set("session", token, SESSION_COOKIE_OPTIONS);
     return res;

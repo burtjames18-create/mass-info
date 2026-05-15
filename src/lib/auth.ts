@@ -36,14 +36,14 @@ export function getSession(token: string): SessionUser | null {
   const db = getDb();
   const row = db
     .prepare(
-      `SELECT s.user_id, u.username FROM sessions s
+      `SELECT s.user_id, u.username, u.is_admin FROM sessions s
        JOIN users u ON u.id = s.user_id
        WHERE s.id = ? AND s.expires_at > datetime('now')`
     )
-    .get(token) as { user_id: number; username: string } | undefined;
+    .get(token) as { user_id: number; username: string; is_admin: number } | undefined;
 
   if (!row) return null;
-  return { userId: row.user_id, username: row.username };
+  return { userId: row.user_id, username: row.username, isAdmin: row.is_admin === 1 };
 }
 
 export function deleteSession(token: string): void {

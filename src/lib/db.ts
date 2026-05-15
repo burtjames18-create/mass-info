@@ -51,6 +51,7 @@ export function getDb(): Database.Database {
         username TEXT UNIQUE NOT NULL,
         email TEXT UNIQUE NOT NULL,
         password_hash TEXT NOT NULL,
+        is_admin INTEGER NOT NULL DEFAULT 0,
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       );
 
@@ -93,11 +94,14 @@ export function getDb(): Database.Database {
       CREATE INDEX IF NOT EXISTS idx_positions_user ON positions(user_id);
     `);
 
-    // Add user_id to watchlist if missing (migration)
-    try {
-      db.exec(`ALTER TABLE watchlist ADD COLUMN user_id INTEGER`);
-    } catch {
-      // column already exists
+    // Migrations
+    try { db.exec(`ALTER TABLE watchlist ADD COLUMN user_id INTEGER`); } catch {}
+    try { db.exec(`ALTER TABLE users ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0`); } catch {}
+
+    // Grant admin to the owner email if set
+    const adminEmail = process.env.ADMIN_EMAIL;
+    if (adminEmail) {
+      db.prepare(`UPDATE users SET is_admin = 1 WHERE email = ?`).run(adminEmail);
     }
   }
   return db;

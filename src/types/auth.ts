@@ -8,4 +8,5 @@ export interface User {
 export interface SessionUser {
   userId: number;
   username: string;
+  isAdmin?: boolean;
 }
