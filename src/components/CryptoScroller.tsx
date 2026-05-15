@@ -61,7 +61,7 @@ export default function CryptoScroller() {
     let paused = false;
     const tick = () => {
       if (!paused && el.scrollWidth > el.clientWidth) {
-        el.scrollLeft += 1.2;
+        el.scrollLeft += 2.2;
         if (el.scrollLeft >= el.scrollWidth / 2) el.scrollLeft = 0;
       }
       raf = requestAnimationFrame(tick);
