@@ -87,11 +87,12 @@ export default function CryptoScroller() {
   };
 
   return (
-    <div className="w-full bg-black border-b border-white/8 overflow-x-scroll" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
-      <div
-        ref={scrollRef}
-        className="flex items-center gap-8 px-6 py-2 overflow-x-hidden whitespace-nowrap"
-      >
+    <div
+      ref={scrollRef}
+      className="w-full bg-black border-b border-white/8 overflow-x-scroll whitespace-nowrap"
+      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+    >
+      <div className="inline-flex items-center gap-8 px-6 py-2">
         {items.map((q, i) => {
           const pct = q.changePercent ?? 0;
           const isPositive = pct >= 0;
