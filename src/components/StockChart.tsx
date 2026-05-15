@@ -255,7 +255,7 @@ export default function StockChart({
       );
     }
 
-    // Add all prediction series as transparent — overlay only, don't affect price scale
+    // Add all prediction series — always, regardless of first/subsequent load
     for (const pred of predictions) {
       if (!visibleModels.has(pred.model)) continue;
       const isBand = pred.model.includes("upper") || pred.model.includes("lower");
@@ -266,17 +266,19 @@ export default function StockChart({
         title: "",
         lastValueVisible: false,
         priceLineVisible: false,
-        autoscaleInfoProvider: () => null, // don't let predictions affect the price scale
+        autoscaleInfoProvider: () => null,
       });
       predSeries.setData(pred.points.map((p) => ({ time: normalizeDate(p.date, isIntraday) as any, value: p.price })));
       predSeriesRef.current.set(pred.model, predSeries);
     }
 
-    // On live updates (not first load): just update data silently, keep pulse running
+    // On live data updates (not first load): update silently, fade in predictions, keep pulse
     if (!isFirstLoad) {
       requestAnimationFrame(() => { chart.timeScale().fitContent(); });
       const lastD = normalized[normalized.length - 1];
       if (canvas) startPulse(canvas, lastD._t, lastD.close, myId);
+      // Still fade in predictions if they just arrived
+      setPhase("done");
       return;
     }
 
