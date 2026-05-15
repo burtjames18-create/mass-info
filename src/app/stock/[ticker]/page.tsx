@@ -191,7 +191,6 @@ export default function StockPage({
           )}
         </div>
       </div>
-      </div>
 
       {/* Chart */}
       <div className="animate-fade-in-up stagger-2 mb-4">
